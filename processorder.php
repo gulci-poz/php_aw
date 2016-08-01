@@ -30,8 +30,10 @@
         define('OILPRICE', 10);
         define('SPARKPRICE', 4);
 
+        $date_order = date('H:i, jS F Y');
+
         echo "<p>Order processed at ";
-        echo date('H:i, jS F Y');
+        echo $date_order;
         echo "</p>";
 
         $totalqty = 0;
@@ -103,6 +105,60 @@
         $taxrate = 0.1;
         $totalamount = $totalamount * (1 + $taxrate);
         echo "Total including tax: $" . number_format($totalamount, 2) . "<br />";
+
+        # otwieranie pliku
+        # to jest korzeń serwera www
+        # $DOCUMENT_ROOT = $_SERVER['DOCUMENT_ROOT'];
+
+        # korzeń naszego skryptu
+        # na potrzeby nauki umieszczam pliki w folderze aplikacji
+        # folder, w którym wszyscy mogą zapisywać lepiej umieścić poza folderem skryptu/aplikacji
+        $SCRIPT_ROOT = dirname(__FILE__);
+
+        # handle/pointer do pliku
+        # fopen() zwraca false, jeśli otwarcie pliku nie powiedzie się
+        # pomijamy błąd  i sami go obsługujemy
+        # jeśli plik nie istnieje, to z użyciem a będzie próba stworzenia nowego pliku
+        @$fp = fopen("$SCRIPT_ROOT/orders/orders.txt", "a");
+
+        if (!$fp) {
+            echo "<p><strong>Your order could not be processed.</strong></p>";
+        }
+        /*
+        else {
+            echo "<p>File opening... done.</p>";
+        }
+        */
+
+        # fputs() jest aliasem na fwrite()
+        # trzeci argument to dlugość stringa w bajtach, można użyć strlen() do uzyskania długości stringa
+        # trzeba dodać jeden, bo strlen() nie liczy znaku końca linii PHP_EOL
+        # można użyć przy zapisie binarnym - kompatybilność na różnych platformach
+        $address = $_POST['address'];
+        $out = $date_order . "\t"
+            . $tireqty . " tires" . "\t"
+            . $oilqty . " oil" . "\t"
+            . $sparkqty . " plugs" . "\t"
+            . "$" . $totalamount . "\t"
+            . $address
+            . PHP_EOL;
+        fwrite($fp, $out, strlen($out) + 1);
+
+        # mamy jeszcze funkcje file_put_contents() i file_get_contents()
+        # nie trzeba wtedy używać fopen() i fclose()
+
+        # true, jeśli wszystko poszło ok
+        fclose($fp);
+
+        # r, r+, w, w+, x, x+, a, a+, b, t
+        # domyślnie jest zawsze b
+        # trzeci parametr to include_path z konfiguracji PHP, nie trzeba wtedy podawać ścieżki
+        # podajemy go jako 1 lub true
+        # czwarty parametr to protokół, np. http://
+        # otwarcie pliku w zdalnej lokalizacji
+        # można wyłączyć tę możliwość za pomocą allow_url_fopen w konfiguracji
+
+        # ==============================
 
         # komentarz w stylu shell script
         # to jednoliniowy komentarz do końca linii lub do zamykającego tagu

@@ -119,7 +119,7 @@
             $oilqty
             ===
             $sparkqty
-theEnd
+theEnd;
         */
 
         # nazwy funkcji nie są case sensitive

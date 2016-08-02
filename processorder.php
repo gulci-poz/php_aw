@@ -115,7 +115,7 @@
         # folder, w którym wszyscy mogą zapisywać lepiej umieścić poza folderem skryptu/aplikacji
         $SCRIPT_ROOT = dirname(__FILE__);
 
-        # handle/pointer do pliku
+        # handle do pliku
         # fopen() zwraca false, jeśli otwarcie pliku nie powiedzie się
         # pomijamy błąd  i sami go obsługujemy
         # jeśli plik nie istnieje, to z użyciem a będzie próba stworzenia nowego pliku
